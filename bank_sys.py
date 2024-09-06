@@ -1,9 +1,16 @@
 from tkinter import *
+from tkinter import messagebox
+import pymysql
+
 #import new_account
 font_size = 15
 
 
 def new_account():
+
+    global value_uname
+    global value_pass
+    global value_cpass
 
     f_new_acc = Frame(root, bg='#CBF1F5', bd=5)
     f_new_acc.place(x=100,y=135, width=800, height=500)
@@ -23,13 +30,12 @@ def new_account():
     value_cpass = Entry(f_new_acc, bd=2 , width=15, font=('Arial',font_size))
     value_cpass.place(x=400, y=250,)
 
-    submit_btw = Button(f_new_acc,text="submit", width=20, height=3)
+    submit_btw = Button(f_new_acc,text="submit", width=20, height=3, command=insert)
     submit_btw.place(x=150, y=350)
 
     close = Button(f_new_acc,text="close", width=20, height=3, command=f_new_acc.destroy)
     close.place(x=550, y=350)
     
-
 
 def deposit():
     #Todo : change layout of the frame
@@ -85,10 +91,29 @@ def withdraw():
     close = Button(f_withdraw,text="close", width=20, height=3, command=f_withdraw.destroy)
     close.place(x=550, y=350)
 
+def insert():
+    uName = value_uname.get()
+    uPW = value_pass.get()
+    confirmPW =  value_cpass.get()
+
+    if uPW == confirmPW:
+        con = pymysql.connect(host="localhost", user="root", passwd="Rajdeep@0510", database="bank_db")
+        cur = con.cursor()
+        cur.execute("Insert into account(userName, userPW) values(%s,%s)", (uName,uPW))
+        con.commit()
+        con.close()
+        messagebox.showinfo("SUCCESS", "Your Account was created successfully")
+
+    else:
+        messagebox.showerror("Error", "Both password should be same")
+
+
+
 
 
 
 root = Tk()
+
 
 root.geometry("1000x700")
 root.config(bg='')                                       #! add approate background color
