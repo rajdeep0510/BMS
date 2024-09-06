@@ -70,25 +70,29 @@ def deposit():
 
 def withdraw():
 
+    global value_uname_wd
+    global value_amount_wd
+    global value_pass_wd
+
     f_withdraw = Frame(root, bg='#CBF1F5', bd=5)
     f_withdraw.place(x=100,y=135, width=800, height=500)
 
     username = Label(f_withdraw, text="Username", font=('Arial',font_size))
     username.place(x=150,y=50,)
-    value_uname = Entry(f_withdraw, bd=2 , width=15, font=('Arial',font_size))
-    value_uname.place(x=400, y=50,)
+    value_uname_wd = Entry(f_withdraw, bd=2 , width=15, font=('Arial',font_size))
+    value_uname_wd.place(x=400, y=50,)
     
     amount = Label(f_withdraw,text="Amount", font=('Arial',font_size))
     amount.place(x=150,y=100)
-    value_amount = Entry(f_withdraw, bd=2 , width=15, font=('Arial',font_size))
-    value_amount.place(x=400, y=100)
+    value_amount_wd = Entry(f_withdraw, bd=2 , width=15, font=('Arial',font_size))
+    value_amount_wd.place(x=400, y=100)
 
     password = Label(f_withdraw, text="password", font=('Arial',font_size))
     password.place(x=150, y=150,)
-    value_pass = Entry(f_withdraw, bd=2 , width=15, font=('Arial',font_size))
-    value_pass.place(x=400, y=150)
+    value_pass_wd = Entry(f_withdraw, bd=2 , width=15, font=('Arial',font_size))
+    value_pass_wd.place(x=400, y=150)
 
-    withdraw_btw = Button(f_withdraw,text="Withdraw", width=20, height=3)
+    withdraw_btw = Button(f_withdraw,text="Withdraw", width=20, height=3, command=withdraw_fun)
     withdraw_btw.place(x=150, y=350)
 
     close = Button(f_withdraw,text="close", width=20, height=3, command=f_withdraw.destroy)
@@ -141,7 +145,6 @@ def deposit_fun():
         messagebox.showerror("Error", "Password was incorrect")
         clear_depo()
 
-
 def clear_depo():
 
     value_uname_depo.delete(0,END)
@@ -149,8 +152,36 @@ def clear_depo():
     value_pass_depo.delete(0,END)
 
 
+def withdraw_fun():
 
-    
+    uname_wd = value_uname_wd.get()
+    amount_wd = int(value_amount_wd.get())
+    password_wd = value_pass_wd.get()
+
+    con = pymysql.connect(host="localhost", user="root", passwd="Rajdeep@0510", database="bank_db")
+    cur = con.cursor()
+    cur.execute("SELECT userPW FROM account WHERE userName = %s", uname_wd)
+    result = cur.fetchone()
+    print(type(result))
+    print(type(password_wd))
+
+
+    if result[0] == password_wd:
+        cur.execute("UPDATE account SET balance = balance - %s WHERE userName = %s",(amount_wd, uname_wd))
+        con.commit()
+        con.close()
+        messagebox.showinfo("SUCCESS", "Money withdraw successfully")
+        clear_wd()
+    else:
+        messagebox.showerror("Error", "Password was incorrect")
+        clear_wd()
+
+
+def clear_wd():
+
+    value_uname_wd.delete(0,END)
+    value_amount_wd.delete(0,END)
+    value_pass_wd.delete(0,END)
 
 
 
