@@ -39,26 +39,29 @@ def new_account():
 
 def deposit():
     #Todo : change layout of the frame
+    global value_uname_depo
+    global value_amount_depo
+    global value_pass_depo
 
     f_deposit = Frame(root, bg='#CBF1F5', bd=5)
     f_deposit.place(x=100,y=135, width=800, height=500)
 
-    username = Label(f_deposit, text="Username", font=('Arial',font_size))
-    username.place(x=150,y=50,)
-    value_uname = Entry(f_deposit, bd=2 , width=15, font=('Arial',font_size))
-    value_uname.place(x=400, y=50,)
+    username_deposit = Label(f_deposit, text="Username", font=('Arial',font_size))
+    username_deposit.place(x=150,y=50,)
+    value_uname_depo = Entry(f_deposit, bd=2 , width=15, font=('Arial',font_size))
+    value_uname_depo.place(x=400, y=50,)
     
     amount = Label(f_deposit,text="Amount", font=('Arial',font_size))
     amount.place(x=150,y=100)
-    value_amount = Entry(f_deposit, bd=2 , width=15, font=('Arial',font_size))
-    value_amount.place(x=400, y=100)
+    value_amount_depo = Entry(f_deposit, bd=2 , width=15, font=('Arial',font_size))
+    value_amount_depo.place(x=400, y=100)
 
-    password = Label(f_deposit, text="password", font=('Arial',font_size))
-    password.place(x=150, y=150,)
-    value_pass = Entry(f_deposit, bd=2 , width=15, font=('Arial',font_size))
-    value_pass.place(x=400, y=150,)
+    password_deposit = Label(f_deposit, text="password", font=('Arial',font_size))
+    password_deposit.place(x=150, y=150,)
+    value_pass_depo = Entry(f_deposit, bd=2 , width=15, font=('Arial',font_size))
+    value_pass_depo.place(x=400, y=150,)
 
-    send_btw = Button(f_deposit,text="Send", width=20, height=3)
+    send_btw = Button(f_deposit,text="Send", width=20, height=3, command=deposit_fun)
     send_btw.place(x=150, y=350)
 
     close = Button(f_deposit,text="close", width=20, height=3, command=f_deposit.destroy)
@@ -99,14 +102,55 @@ def insert():
     if uPW == confirmPW:
         con = pymysql.connect(host="localhost", user="root", passwd="Rajdeep@0510", database="bank_db")
         cur = con.cursor()
-        cur.execute("Insert into account(userName, userPW) values(%s,%s)", (uName,uPW))
+        cur.execute("Insert into account(userName, userPW, password) values(%s,%s,%s)", (uName,uPW))
         con.commit()
         con.close()
         messagebox.showinfo("SUCCESS", "Your Account was created successfully")
-
+        clear()
     else:
         messagebox.showerror("Error", "Both password should be same")
+        clear()
 
+def clear():
+    value_uname.delete(0,END)
+    value_pass.delete(0,END)
+    value_cpass.delete(0,END)
+    
+
+def deposit_fun():
+
+    uname_depo = value_uname_depo.get()
+    amount_depo = int(value_amount_depo.get())
+    password_depo = value_pass_depo.get()
+
+    con = pymysql.connect(host="localhost", user="root", passwd="Rajdeep@0510", database="bank_db")
+    cur = con.cursor()
+    cur.execute("SELECT userPW FROM account WHERE userName = %s", uname_depo)
+    result = cur.fetchone()
+    print(type(result))
+    print(type(password_depo))
+
+
+    if result[0] == password_depo:
+        cur.execute("UPDATE account SET balance = balance + %s WHERE userName = %s",(amount_depo, uname_depo))
+        con.commit()
+        con.close()
+        messagebox.showinfo("SUCCESS", "Money deposited successfully")
+        clear_depo()
+    else:
+        messagebox.showerror("Error", "Password was incorrect")
+        clear_depo()
+
+
+def clear_depo():
+
+    value_uname_depo.delete(0,END)
+    value_amount_depo.delete(0,END)
+    value_pass_depo.delete(0,END)
+
+
+
+    
 
 
 
