@@ -14,7 +14,7 @@ def security_mail(email_reciver):
 
     subject = '!!!  fack account in danger  !!!'
     body = '''
-    Your fake account is in danger someone is trying to stral money from your fack account. 
+    Your fake account is in danger someone is trying to steel money from your fack account. 
     May god help you because wee can't.
     '''
 
