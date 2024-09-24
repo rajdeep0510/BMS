@@ -145,6 +145,31 @@ def stf():
     close = Button(f_stf,text="close", width=20, height=3, command=f_stf.destroy)
     close.place(x=550, y=350)
 
+def acc_info():
+
+    global value_uname_info
+    global value_pass_info
+
+    
+    f_acc_info = Frame(root, bg='#CBF1F5', bd=5)
+    f_acc_info.place(x=100,y=135, width=800, height=500)
+
+    username_info = Label(f_acc_info, text="Username", font=('Arial',font_size))
+    username_info.place(x=150,y=50,)
+    value_uname_info = Entry(f_acc_info, bd=2 , width=15, font=('Arial',font_size))
+    value_uname_info.place(x=400, y=50,)
+
+    password_info = Label(f_acc_info, text="password", font=('Arial',font_size))
+    password_info.place(x=150, y=100,)
+    value_pass_info = Entry(f_acc_info, bd=2 , width=15, font=('Arial',font_size))
+    value_pass_info.place(x=400, y=100,)
+
+    go_btw = Button(f_acc_info,text="GO", width=20, height=3, command=info_fun)
+    go_btw.place(x=150, y=350)
+
+    close = Button(f_acc_info,text="Close", width=20, height=3, command=f_acc_info.destroy)
+    close.place(x=550, y=350)
+
 
 
 
@@ -279,6 +304,35 @@ def clear_stf():
     value_password_stf.delete(0,END)
 
 
+def info_fun():
+
+    uname_info = value_uname_info.get()
+    password_info = value_pass_info.get()
+
+    con = pymysql.connect(host="localhost", user="root", passwd="rajdeep0510", database="bank_db")
+    cur = con.cursor()
+    cur.execute("SELECT userPW FROM account WHERE userName = %s", uname_info)
+    amount_r = cur.fetchone()
+
+    if amount_r[0] == password_info:
+        cur.execute("SELECT balance FROM account WHERE userName = %s;",(uname_info))
+        amount = cur.fetchone()
+        con.commit()
+        con.close()
+        messagebox.showinfo(title="Information", message=f"Your current balance is {amount}", icon='info')
+        clear_info()
+    else:
+        messagebox.showerror("Error", "Password was incorrect")
+        con = pymysql.connect(host="localhost", user="root", passwd="rajdeep0510", database="bank_db")
+        cur = con.cursor()
+        cur.execute("SELECT email FROM account WHERE userName = %s", uname_info)
+        email = cur.fetchone()
+        mail.security_mail(email[0])
+        clear_info()
+
+def clear_info():
+    value_uname_info.delete(0,END)
+    value_pass_info.delete(0,END)
 
 
 
@@ -305,27 +359,33 @@ master.place(x=100,y=135, width=800, height=500)
 #BUTTONS
 new_account = Button(master,
                      text="Open New Account",
-                     width=100, height=5,
+                     width=50, height=4,
                      command=new_account)
-new_account.pack(padx=30,pady=20)
+new_account.pack(pady="10")
 
 deposit = Button(master,
                      text="Deposit",
-                     width=100, height=5,
+                     width=50, height=4,
                      command = deposit)
-deposit.pack(padx=30,pady=20)
+deposit.pack(pady="10")
 
 Withdraw = Button(master,
                      text="Withdraw",
-                     width=100, height=5,
+                     width=50, height=4,
                      command=withdraw)
-Withdraw.pack(padx=30,pady=20)
+Withdraw.pack(pady="10")
 
 send_to_frind = Button(master,
                      text="Send to Friend",
-                     width=100, height=5,
+                     width=50, height=4,
                      command=stf)
-send_to_frind.pack(padx=30,pady=20)
+send_to_frind.pack(pady="10")
+
+acc_info= Button(master,
+                     text="Account Information",
+                     width=50, height=4,
+                     command=acc_info)
+acc_info.pack(pady="10")
 
 
 
