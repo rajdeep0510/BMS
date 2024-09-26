@@ -107,6 +107,7 @@ def withdraw():
     close = Button(f_withdraw,text="close", width=20, height=3, command=f_withdraw.destroy)
     close.place(x=550, y=350)
 
+
 def stf():
 
     global value_sender_username_stf
@@ -144,6 +145,7 @@ def stf():
 
     close = Button(f_stf,text="close", width=20, height=3, command=f_stf.destroy)
     close.place(x=550, y=350)
+
 
 def acc_info():
 
@@ -342,13 +344,11 @@ root = Tk()
 
 
 root.geometry("1000x700")
-root.config(bg='')                                       #! add approate background color
 
 main_title = Label(root,
                    text="Bank Management System",
                    font=("Arial", 40),
-                   #bg='------',                         #! add approate background color
-                   relief='groove',borderwidth=2,         #BORDER
+                   relief='groove',borderwidth=2,         
                    )
 main_title.pack(side="top", fill="x")
 
